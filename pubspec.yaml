@@ -15,6 +15,16 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  firebase_core: ^1.13.1
+  cloud_firestore: ^3.1.10
+  firebase_auth: ^3.3.9
+  firebase_storage: ^10.2.9
+  flutter_easyloading: ^3.0.3
+  flutter_native_splash: ^2.0.5
+  image_picker: ^0.8.4+10
+  permission_handler: ^9.2.0
+  font_awesome_flutter: ^9.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
