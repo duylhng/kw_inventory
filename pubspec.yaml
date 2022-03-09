@@ -24,6 +24,10 @@ dependencies:
   image_picker: ^0.8.4+10
   permission_handler: ^9.2.0
   font_awesome_flutter: ^9.2.0
+  google_fonts: ^2.3.1
+  rounded_loading_button: ^2.0.9
+  file_picker: ^4.5.0
+  flutter_speed_dial: ^5.0.0+1
 
 dev_dependencies:
   flutter_test:

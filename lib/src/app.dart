@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kw_inventory/src/screens/home_screen.dart';
+import 'package:kw_inventory/src/user/sign_in_screen.dart';
 
+import 'firebase/firebase_service.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -26,6 +31,9 @@ class MyApp extends StatelessWidget {
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          builder: EasyLoading.init(),
+          debugShowCheckedModeBanner: false,
+
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
@@ -56,30 +64,85 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(),
+          theme: ThemeData(
+            textTheme: const TextTheme(
+              bodyText2: TextStyle(fontSize: 18),
+            ),
+            appBarTheme: const AppBarTheme(
+              centerTitle: true,
+            ),
+            listTileTheme: const ListTileThemeData(
+              iconColor: Colors.white,
+              textColor: Colors.white,
+              horizontalTitleGap: 50,
+              minLeadingWidth: 20,
+              minVerticalPadding: 20
+            ),
+          ),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
-                  case SampleItemListView.routeName:
-                  default:
-                    return const SampleItemListView();
-                }
-              },
-            );
-          },
+          // onGenerateRoute: (RouteSettings routeSettings) {
+          //   return MaterialPageRoute<void>(
+          //     settings: routeSettings,
+          //     builder: (BuildContext context) {
+          //       switch (routeSettings.name) {
+          //         case SignInScreen.routeName:
+          //           return const SignInScreen();
+          //         case SettingsView.routeName:
+          //           return SettingsView(controller: settingsController);
+          //         case HomeScreen.routeName:
+          //           return const HomeScreen();
+          //         default:
+          //           return const Root();
+          //       }
+          //     },
+          //   );
+          // },
+          home: Root(settingsController: settingsController),
         );
       },
     );
   }
 }
+
+class Root extends StatefulWidget {
+  final SettingsController settingsController;
+
+  const Root({
+    Key? key,
+    required this.settingsController,
+  }) : super(key: key);
+
+  @override
+  State<Root> createState() => _RootState();
+}
+
+class _RootState extends State<Root> {
+  final FirebaseService firebaseService = FirebaseService();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: firebaseService.user,
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.data?.uid == null) {
+            return SignInScreen(settingsController: widget.settingsController);
+          } else {
+            return HomeScreen(settingsController: widget.settingsController);
+          }
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: Text("Loading..."),
+            ),
+          );
+        }
+      }
+    );
+  }
+}
+
