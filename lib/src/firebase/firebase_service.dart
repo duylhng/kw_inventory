@@ -53,4 +53,19 @@ class FirebaseService{
   Future<void> signOut() async {
     await firebaseAuth.signOut();
   }
+
+  Future addInvoiceToFirestore(
+      String invoiceName, String invoiceType, String linkToFile) async {
+
+    firestore
+      .collection('Invoices')
+        .add(
+          {
+            'dateAdded': FieldValue.serverTimestamp(),
+            'name': invoiceName,
+            'type': invoiceType,
+            'url': linkToFile,
+          }
+    );
+  }
 }

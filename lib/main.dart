@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'src/app.dart';
 import 'src/settings/settings_controller.dart';
@@ -23,4 +24,12 @@ void main() async {
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
   runApp(MyApp(settingsController: settingsController));
+  //configEasyLoading();
 }
+
+// void configEasyLoading() {
+//   EasyLoading.instance
+//     ..userInteractions = false
+//     ..indicatorType = EasyLoadingIndicatorType.
+//
+// }
